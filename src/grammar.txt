@@ -1,0 +1,88 @@
+program : definition
+        | definition program
+
+definition : varDef
+           | funcDef
+
+varDef : VAR ID EQUAL expr SEMI
+
+funcDef : FUNCTION ID OPAREN optParamList CPAREN block
+
+idDef : ID
+      | ID OPAREN optExprList CPAREN
+      | ID OBRACKET expr CBRACKET
+
+optParamList : EMPTY
+             | paramList
+
+paramList : ID
+          | ID COMMA paramList
+
+optExprList : EMPTY
+           | exprList
+
+exprList : expr
+         | expr COMMA exprList
+
+expr : primary
+     | primary operator expr
+
+primary : idDef
+        | STRING
+        | INTEGER
+        | NOT primary
+        | OPAREN expr CPAREN
+        | k_lambda
+        | functionDefinition
+        | OBRACKET optExprList CBRACKET
+        | NIL
+        | BOOLEAN
+        | PRINT OPAREN exprList CPAREN
+        | APPEND OPAREN exprList CPAREN
+        | INSERT OPAREN exprList CPAREN
+        | REMOVE OPAREN exprList CPAREN
+        | SET OPAREN exprList CPAREN
+        | LENGTH OPAREN exprList CPAREN
+
+operator : EQUAL
+         | NEQUAL
+         | GREATER
+         | LESS
+         | GEQUAL
+         | LEQUAL
+         | PLUS
+         | MINUS
+         | MULTIPLY
+         | DIVIDE
+         | INTEGERDIVIDE
+         | POWER
+         | AND
+         | OR
+         | DEQUAL
+
+block : OBRACE optStatementList CBRACE
+
+optStatementList : EMPTY
+                 | statementList
+
+statementList : statement
+              | statement statementList
+
+statement : varDef
+          | funcDef
+          | expr SEMI
+          | whileLoop
+          | ifStatement
+          | RETURN expr SEMI
+
+whileLoop : WHILE OPAREN expr CPAREN block
+
+ifStatement : IF OPAREN expr CPAREN block optElseStatement
+
+optElseStatement : EMPTY
+                 | elseStatement
+
+elseStatement : ELSE block
+              | ELSE ifStatement
+
+k_lambda : LAMBDA OPAREN optParamList CPAREN block
